@@ -79,18 +79,17 @@ function Header( {
 export default compose(
 	withSelect( ( select ) => ( {
 		hasActiveMetaboxes: select( 'core/edit-post' ).hasMetaBoxes(),
-		hasBlockSelection: !! select( 'core/editor' ).getBlockSelectionStart(),
 		isEditorSidebarOpened: select( 'core/edit-post' ).isEditorSidebarOpened(),
 		isPublishSidebarOpened: select( 'core/edit-post' ).isPublishSidebarOpened(),
 		isSaving: select( 'core/edit-post' ).isSavingMetaBoxes(),
 	} ) ),
-	withDispatch( ( dispatch, { hasBlockSelection } ) => {
+	withDispatch( ( dispatch, ownProps, select ) => {
+		const { getBlockSelectionStart } = select( 'core/edit-post' );
 		const { openGeneralSidebar, closeGeneralSidebar } = dispatch( 'core/edit-post' );
-		const sidebarToOpen = hasBlockSelection ? 'edit-post/block' : 'edit-post/document';
+		const sidebarToOpen = getBlockSelectionStart() ? 'edit-post/block' : 'edit-post/document';
 		return {
 			openGeneralSidebar: () => openGeneralSidebar( sidebarToOpen ),
 			closeGeneralSidebar: closeGeneralSidebar,
-			hasBlockSelection: undefined,
 		};
 	} ),
 )( Header );
